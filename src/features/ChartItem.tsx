@@ -6,10 +6,11 @@ import {
 	SeriesObservationsResponseProps,
 } from "../shared/interface";
 import { deleteChart, getSeriesObservations } from "../shared/api";
-import { useChart } from "../shared/hooks/useChart";
+import { useChart } from "../shared/hooks";
 import { ChartPreview } from "../widgets/chart-form/ChartPreview";
 import Icon from "@mdi/react";
 import { mdiDotsVertical } from "@mdi/js";
+import useWindowDimensions from "../shared/hooks/useWindowDimensions";
 
 export const ChartItem = ({
 	chart,
@@ -68,8 +69,10 @@ export const ChartItem = ({
 		chartStyle: chart.chartStyle,
 	});
 
+	const { width } = useWindowDimensions();
+
 	return (
-		<div className="tw-container tw-rounded-md tw-bg-white tw-shadow-md tw-py-4 tw-px-6 tw-mb-6 tw-h[500px] tw-relative">
+		<div className="tw-container tw-rounded-md tw-bg-white tw-shadow-md tw-py-4 tw-px-6 tw-mb-6 tw-relative">
 			<div className="tw-absolute tw-right-4 ">
 				<Button
 					id="basic-button"
@@ -105,6 +108,7 @@ export const ChartItem = ({
 				<ChartPreview
 					chartStoreProps={chartStoreProps}
 					chartPreviewProps={chartPreviewProps}
+					chartHeight={width > 768 ? 500 : 200}
 				/>
 			)}
 		</div>

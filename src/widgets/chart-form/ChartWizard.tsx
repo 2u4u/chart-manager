@@ -18,7 +18,7 @@ import { FormFooter } from "./FormFooter";
 import { getSeriesObservations, postChart, putChart } from "../../shared/api";
 import { ChartForm } from "./ChartForm";
 import { ChartPreview } from "./ChartPreview";
-import { useChart } from "../../shared/hooks/useChart";
+import { useChart } from "../../shared/hooks";
 import { v4 as uuidv4 } from "uuid";
 
 export const ChartWizard = ({
@@ -26,7 +26,7 @@ export const ChartWizard = ({
 	onLoadData,
 	chart,
 }: {
-	onClose: (event: React.KeyboardEvent | React.MouseEvent) => void;
+	onClose: () => void;
 	onLoadData: () => Promise<void>;
 	chart?: ChartProps;
 }) => {
@@ -156,6 +156,7 @@ export const ChartWizard = ({
 			id: uuidv4(),
 		});
 		await onLoadData();
+		onClose();
 	};
 
 	return (
@@ -164,8 +165,12 @@ export const ChartWizard = ({
 				onClose={onClose}
 				text={chart?.id ? "Edit Chart" : "Add Chart"}
 			/>
+			<div className="tw-text-sm tw-px-5 tw-py-4 md:tw-hidden tw-text-red-400">
+				Please note, that chart preview disabled on small screens, please use
+				desktop for avanced user experience
+			</div>
 			<Grid container className="tw-h-full tw-overflow-hidden">
-				<Grid item xs={6} className="tw-h-full tw-relative">
+				<Grid item xs={12} md={6} className="tw-h-full tw-relative">
 					<ChartForm
 						onSelectSeries={handleSelectSeries}
 						selectedSeries={selectedSeries}
@@ -180,7 +185,7 @@ export const ChartWizard = ({
 						isEdit={!!chart?.id}
 					/>
 				</Grid>
-				<Grid item xs={6} className="tw-h-full tw-w-full">
+				<Grid item xs={6} className="tw-h-full tw-w-full tw-hidden md:tw-block">
 					{selectedSeries && seriesDataLoading && (
 						<div className="tw-w-full tw-h-full tw-flex tw-items-center tw-justify-center">
 							<CircularProgress />

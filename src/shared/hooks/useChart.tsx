@@ -305,7 +305,6 @@ export const useChart = ({
 
 	const chartPreviewProps = {
 		...chartProps,
-		height: 500,
 	};
 
 	const chartStoreProps = {

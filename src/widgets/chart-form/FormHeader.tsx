@@ -5,7 +5,7 @@ export const FormHeader = ({
 	onClose,
 	text,
 }: {
-	onClose: (event: React.KeyboardEvent | React.MouseEvent) => void;
+	onClose: () => void;
 	text: string;
 }) => (
 	<>

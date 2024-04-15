@@ -24,6 +24,10 @@ export const Dashboard = () => {
 			setOpenDrawer(open);
 		};
 
+	const handleCloseDrawer = () => {
+		setOpenDrawer(false);
+	};
+
 	const handleLoadData = async () => {
 		try {
 			const data: any[] = await getCharts();
@@ -75,9 +79,9 @@ export const Dashboard = () => {
 					open={openDrawer}
 					onClose={handleDrawerOpen(false)}
 				>
-					<Box className="tw-w-[80vw] tw-h-full tw-overflow-hidden">
+					<Box className="tw-w-[100vw] md:tw-w-[80vw] tw-h-full tw-overflow-hidden">
 						<ChartWizard
-							onClose={handleDrawerOpen(false)}
+							onClose={handleCloseDrawer}
 							onLoadData={handleLoadData}
 							chart={chart}
 						/>

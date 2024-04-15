@@ -5,6 +5,7 @@ import { BarChart, LineChart } from "@mui/x-charts";
 export const ChartPreview = ({
 	chartStoreProps,
 	chartPreviewProps,
+	chartHeight = 500,
 }: {
 	chartStoreProps: {
 		chartProps: any;
@@ -15,15 +16,16 @@ export const ChartPreview = ({
 		type: ChartTypeEnum;
 	};
 	chartPreviewProps: any;
+	chartHeight?: number;
 }) => {
 	let chart = null;
 	switch (chartStoreProps.type) {
 		case ChartTypeEnum.Line:
 		case ChartTypeEnum.Area:
-			chart = <LineChart {...chartPreviewProps} />;
+			chart = <LineChart {...chartPreviewProps} height={chartHeight} />;
 			break;
 		case ChartTypeEnum.Bar:
-			chart = <BarChart {...chartPreviewProps} />;
+			chart = <BarChart {...chartPreviewProps} height={chartHeight} />;
 			break;
 		default:
 			break;
