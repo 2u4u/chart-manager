@@ -22,6 +22,7 @@ export const ChartForm = ({
 	onChangeAxisY,
 	chartStyle,
 	onChangeStyle,
+	isEdit = false,
 }: {
 	onSelectSeries: (series: TagSeriesProps | null) => void;
 	selectedSeries: string | null;
@@ -33,6 +34,7 @@ export const ChartForm = ({
 	onChangeAxisY: (newAxisY: ChartAxisYProps) => void;
 	chartStyle: ChartStyleProps;
 	onChangeStyle: (newStyle: ChartStyleProps) => void;
+	isEdit: boolean;
 }) => {
 	return (
 		<>
@@ -42,7 +44,7 @@ export const ChartForm = ({
 						spacing={2}
 						className="tw-overflow-y-auto tw-overflow-x-hidden tw-mt-0 tw-h-full"
 					>
-						<FormDataBlock handleSelectSeries={onSelectSeries} />
+						{!isEdit && <FormDataBlock handleSelectSeries={onSelectSeries} />}
 						{selectedSeries && (
 							<>
 								<FormSettingsBlock

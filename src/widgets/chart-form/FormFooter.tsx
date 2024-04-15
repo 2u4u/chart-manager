@@ -1,6 +1,12 @@
 import { Button, Divider } from "@mui/material";
 
-export const FormFooter = ({ onSubmit }: { onSubmit: () => void }) => {
+export const FormFooter = ({
+	onSubmit,
+	text,
+}: {
+	onSubmit: () => void;
+	text: string;
+}) => {
 	return (
 		<div className="tw-mt-auto tw-mb-0">
 			<Divider />
@@ -11,7 +17,7 @@ export const FormFooter = ({ onSubmit }: { onSubmit: () => void }) => {
 					size="large"
 					onClick={onSubmit}
 				>
-					Add
+					{text}
 				</Button>
 			</div>
 		</div>

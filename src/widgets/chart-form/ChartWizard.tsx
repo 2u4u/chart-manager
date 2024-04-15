@@ -7,14 +7,15 @@ import {
 	ChartSettingsProps,
 	ChartStyleProps,
 	ChartTypeEnum,
+	ChartProps,
 	SeriesObservationProps,
 	SeriesObservationsResponseProps,
 	TagSeriesProps,
 } from "../../shared/interface";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FormHeader } from "./FormHeader";
 import { FormFooter } from "./FormFooter";
-import { getSeriesObservations, putChart } from "../../shared/api";
+import { getSeriesObservations, postChart, putChart } from "../../shared/api";
 import { ChartForm } from "./ChartForm";
 import { ChartPreview } from "./ChartPreview";
 import { useChart } from "../../shared/hooks/useChart";
@@ -23,9 +24,11 @@ import { v4 as uuidv4 } from "uuid";
 export const ChartWizard = ({
 	onClose,
 	onLoadData,
+	chart,
 }: {
 	onClose: (event: React.KeyboardEvent | React.MouseEvent) => void;
 	onLoadData: () => Promise<void>;
+	chart?: ChartProps;
 }) => {
 	const [selectedSeries, setSelectedSeries] = useState<string | null>(null);
 	const [seriesDataLoading, setSeriesDataLoading] = useState<boolean>(false);
@@ -63,14 +66,36 @@ export const ChartWizard = ({
 		barColor: "#fcaa5f",
 	});
 
+	useEffect(() => {
+		const hadleLoadData = async () => {
+			if (chart) {
+				setChartSettings(chart.chartSettings);
+				setChartAxisX(chart.chartAxisX);
+				setChartAxisY(chart.chartAxisY);
+				setChartStyle(chart.chartStyle);
+				setSelectedSeries(chart.seriesId);
+			}
+			if (chart?.seriesId) {
+				await handleLoadSeriesData(chart.seriesId);
+			}
+		};
+		hadleLoadData();
+	}, [chart]);
+
+	const handleLoadSeriesData = async (seriesId: string) => {
+		if (seriesId) {
+			setSeriesDataLoading(true);
+			const seriesData: SeriesObservationsResponseProps =
+				await getSeriesObservations(seriesId);
+			setSeriesData(seriesData.observations);
+			setSeriesDataLoading(false);
+		}
+	};
+
 	const handleSelectSeries = async (series: TagSeriesProps | null) => {
 		setSelectedSeries(series?.id || null);
 		if (series?.id) {
-			setSeriesDataLoading(true);
-			const seriesData: SeriesObservationsResponseProps =
-				await getSeriesObservations(series.id);
-			setSeriesData(seriesData.observations);
-			setSeriesDataLoading(false);
+			await handleLoadSeriesData(series.id);
 		}
 		if (series?.title) {
 			setChartSettings({
@@ -110,7 +135,19 @@ export const ChartWizard = ({
 	});
 
 	const handleSubmit = async () => {
-		await putChart({
+		if (chart?.id) {
+			await putChart({
+				chartSettings,
+				chartAxisX,
+				chartAxisY,
+				chartStyle,
+				seriesId: selectedSeries,
+				id: chart.id,
+			});
+			await onLoadData();
+			return;
+		}
+		await postChart({
 			chartSettings,
 			chartAxisX,
 			chartAxisY,
@@ -123,7 +160,10 @@ export const ChartWizard = ({
 
 	return (
 		<Stack className="tw-h-full tw-overflow-hidden tw-relative tw-text-header">
-			<FormHeader onClose={onClose} />
+			<FormHeader
+				onClose={onClose}
+				text={chart?.id ? "Edit Chart" : "Add Chart"}
+			/>
 			<Grid container className="tw-h-full tw-overflow-hidden">
 				<Grid item xs={6} className="tw-h-full tw-relative">
 					<ChartForm
@@ -137,6 +177,7 @@ export const ChartWizard = ({
 						onChangeAxisY={handleChangeChartAxisY}
 						chartStyle={chartStyle}
 						onChangeStyle={handleChangeChartStyle}
+						isEdit={!!chart?.id}
 					/>
 				</Grid>
 				<Grid item xs={6} className="tw-h-full tw-w-full">
@@ -153,7 +194,7 @@ export const ChartWizard = ({
 					)}
 				</Grid>
 			</Grid>
-			<FormFooter onSubmit={handleSubmit} />
+			<FormFooter onSubmit={handleSubmit} text={chart?.id ? "Edit" : "Add"} />
 		</Stack>
 	);
 };

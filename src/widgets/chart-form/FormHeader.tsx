@@ -3,8 +3,10 @@ import CloseIcon from "@mui/icons-material/Close";
 
 export const FormHeader = ({
 	onClose,
+	text,
 }: {
 	onClose: (event: React.KeyboardEvent | React.MouseEvent) => void;
+	text: string;
 }) => (
 	<>
 		<Box className="tw-px-5 tw-py-4">
@@ -13,7 +15,7 @@ export const FormHeader = ({
 				component="h1"
 				className="tw-text-lg tw-font-medium"
 			>
-				New Chart
+				{text}
 			</Typography>
 		</Box>
 		<Button

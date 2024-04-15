@@ -2,12 +2,14 @@ import { Box, CircularProgress, Drawer, Stack } from "@mui/material";
 import { ChartItem, Header } from "../features";
 import { useEffect, useState } from "react";
 import { ChartWizard } from "../widgets";
-import { getCharts } from "../shared/api";
+import { getChart, getCharts } from "../shared/api";
+import { ChartProps } from "../shared/interface";
 
 export const Dashboard = () => {
 	const [openDrawer, setOpenDrawer] = useState(false);
 	const [loading, setLoading] = useState(true);
 	const [charts, setCharts] = useState<any[]>([]);
+	const [chart, setChart] = useState<ChartProps | undefined>(undefined);
 
 	const handleDrawerOpen =
 		(open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
@@ -36,9 +38,17 @@ export const Dashboard = () => {
 		handleLoadData();
 	}, []);
 
-	const handleEditChart = () => {
+	const handleEditChart = async (id: string) => {
 		setOpenDrawer(true);
+		const chart = await getChart(id);
+		setChart(chart);
 	};
+
+	useEffect(() => {
+		if (!openDrawer) {
+			setChart(undefined);
+		}
+	}, [openDrawer]);
 
 	return (
 		<>
@@ -69,6 +79,7 @@ export const Dashboard = () => {
 						<ChartWizard
 							onClose={handleDrawerOpen(false)}
 							onLoadData={handleLoadData}
+							chart={chart}
 						/>
 					</Box>
 				</Drawer>

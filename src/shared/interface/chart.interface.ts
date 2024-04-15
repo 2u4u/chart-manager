@@ -34,3 +34,11 @@ export interface ChartStyleProps {
 	tickColor: string;
 	labelColor: string;
 }
+export interface ChartProps {
+	chartSettings: ChartSettingsProps;
+	chartAxisX: ChartAxisXProps;
+	chartAxisY: ChartAxisYProps;
+	chartStyle: ChartStyleProps;
+	seriesId: string;
+	id: string;
+}

@@ -1,10 +1,7 @@
 import { Button, CircularProgress, Menu, MenuItem } from "@mui/material";
 import { useEffect, useState } from "react";
 import {
-	ChartAxisXProps,
-	ChartAxisYProps,
-	ChartSettingsProps,
-	ChartStyleProps,
+	ChartProps,
 	SeriesObservationProps,
 	SeriesObservationsResponseProps,
 } from "../shared/interface";
@@ -19,16 +16,9 @@ export const ChartItem = ({
 	onLoadData,
 	onEditChart,
 }: {
-	chart: {
-		chartSettings: ChartSettingsProps;
-		chartAxisX: ChartAxisXProps;
-		chartAxisY: ChartAxisYProps;
-		chartStyle: ChartStyleProps;
-		seriesId: string;
-		id: string;
-	};
+	chart: ChartProps;
 	onLoadData: () => Promise<void>;
-	onEditChart: (id: string) => Promise<void>;
+	onEditChart: (id: string) => void;
 }) => {
 	const [loading, setLoading] = useState(true);
 	const [seriesData, setSeriesData] = useState<SeriesObservationProps[] | null>(
@@ -46,13 +36,13 @@ export const ChartItem = ({
 	};
 
 	const handleDelete = async () => {
-		await deleteChart(chart.seriesId);
+		await deleteChart(chart.id);
 		await onLoadData();
 		handleClose();
 	};
 
 	const handleEdit = async () => {
-		await onEditChart(chart.id);
+		onEditChart(chart.id);
 		handleClose();
 	};
 
